@@ -1,7 +1,7 @@
 function Title() {
     return (
       <div className="Title">
-          <h1>Memorama by ZeroMercy</h1>
+          <h1>MEMORAMA DE GATITOS by ZeroMercy</h1>
       </div>
     );
   }
