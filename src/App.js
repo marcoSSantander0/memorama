@@ -8,7 +8,7 @@ function App() {
       <header>
         <Title/>
         <Instructions/>
-        </header>
+      </header>
         <Game/>
     </div> 
   ); 

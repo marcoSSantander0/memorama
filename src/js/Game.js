@@ -42,7 +42,13 @@ const Memorama = () => {
         }
     };
 
+   
+
     useEffect(() => {
+        if (firstCard === secondCard) {
+          resetTurn();
+          return;
+        }
         if (firstCard && secondCard) {
           if (firstCard.value === secondCard.value) {
             setCards(prevCards =>
@@ -50,22 +56,33 @@ const Memorama = () => {
                 if (card.value === firstCard.value) {
                   return { ...card, matched: true };
                 }
+                win();
                 return card;
               })
             );
             resetTurn();
+            
           } else {
             setTimeout(() => resetTurn(), 1000);
           }
         }
-      }, [secondCard]);
+      }, [firstCard, secondCard]);
       
       const resetTurn = () => {
         setFirstCard(null);
         setSecondCard(null);
         setDisabled(false);
+        setTimeout(() => win(), 1000);
       };
       
+      const win = ()=>{
+        if(cards.every(card => card.matched === true)){
+          alert("¡Ganaste!");
+          console.log("Ganaste?")
+        };
+      }
+
+
       return (
         <div className="memorama">
           <h1>Memorama con Gatos 🐱</h1>
