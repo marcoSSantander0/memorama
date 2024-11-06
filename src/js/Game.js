@@ -13,6 +13,7 @@ const Memorama = () => {
     const [secondPlayer, setSecondPlayer] = useState(null);
     const [currentPlayer, setCurrentPlayer] = useState(null);
     const [loading, setLoading] = useState(true); 
+    const [winner, setWinner] = useState("");
 
     const fetchGatitos = async () => {
         try {
@@ -35,13 +36,12 @@ const Memorama = () => {
     };
 
     const playersInit = () => {
-        const points = 0;
-        const player1 = { name: "P 1", points: points};
-        const player2 = { name: "P 2", points: points};
+        const player1 = { name: "P 1", points: 0};
+        const player2 = { name: "P 2", points: 0};
 
         setFirstPlayer(player1);
         setSecondPlayer(player2);
-        setCurrentPlayer(prev => ({...firstPlayer}));
+        setCurrentPlayer(player1);
     };
 
     useEffect(() => {
@@ -72,16 +72,16 @@ const Memorama = () => {
                 setCards(prevCards =>
                     prevCards.map(card => {
                         if (card.value === firstCard.value) {
-                            handlePoints();
                             return { ...card, matched: true };
                         }
                         return card;
                     })
                 );
+                handlePoints();
                 resetTurn();
             } else {
                 handleTurn();
-                setTimeout(() => resetTurn(), 1000);
+                setTimeout(resetTurn, 1000);
             }
         }
     }, [firstCard, secondCard]);
@@ -93,18 +93,18 @@ const Memorama = () => {
     };
 
     const handleTurn = () => {
-      if(currentPlayer === firstPlayer){
+      if(currentPlayer.name === firstPlayer.name){
         setCurrentPlayer(secondPlayer);
-      }else{
+      }else if (currentPlayer.name === secondPlayer.name){
         setCurrentPlayer(firstPlayer);
         
       }
     }
 
     const handlePoints = () => {
-      if (currentPlayer  === firstPlayer) {
+      if (currentPlayer.name  === firstPlayer.name) {
         setFirstPlayer(prev=> ({...firstPlayer, points: prev.points + 25}));
-      }else {
+      }else if (currentPlayer.name === secondPlayer.name){
         setSecondPlayer(prev => ({...secondPlayer, points: prev.points + 25}));
       }
 
@@ -113,7 +113,13 @@ const Memorama = () => {
     useEffect(() => {
       const intervalId = setInterval(() => {
           if (cards.every(card => card.matched)) {
-              alert("¡Ganaste!");
+              if(firstPlayer.points>secondPlayer.points){
+                setCurrentPlayer(firstPlayer);
+                setWinner(currentPlayer);
+                }else if(secondPlayer.points>firstPlayer.points){
+                    setCurrentPlayer(secondPlayer);
+                    setWinner(currentPlayer);
+              }
               clearInterval(intervalId);
           }
       }, 3000);
@@ -130,11 +136,12 @@ const Memorama = () => {
             <div className='P1'>
                 <h2>{firstPlayer.name}</h2>
                 <h4>Puntaje: {firstPlayer.points}</h4>
-                <img src={cards[0].value} alt='gato'></img>
+                <img src={cards[1].value} alt='gato'></img>
             </div>
             <div>
                 <h1>Memorama con Gatos 🐱</h1>
                 <h3>Turno: {currentPlayer.name} </h3>
+                <h1>{winner.name}</h1>
                 <div className="grid">
                     {cards.map(card => (
                         <div
@@ -153,7 +160,7 @@ const Memorama = () => {
             <div className='P2'>
                 <h2>{secondPlayer.name}</h2>
                 <h4>Puntaje: {secondPlayer.points}</h4>
-                <img src={cards[2].value} alt='gato'></img>
+                <img src={cards[4].value} alt='gato'></img>
             </div>
         </div>
     );
